@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/denis-zavgorodny/webauthn/issues"
   },
-  "homepage": "https://github.com/denis-zavgorodny/webauthn#readme"
+  "homepage": "https://github.com/denis-zavgorodny/webauthn#readme",
+  "dependencies": {
+    "parcel-bundler": "^1.12.4"
+  }
 }
