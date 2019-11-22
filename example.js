@@ -33,7 +33,7 @@ var createCredentialDefaultArgs = {
 var getCredentialDefaultArgs = {
     publicKey: {
         timeout: 60000,
-        // allowCredentials: [newCredential] // see below
+        // allowCredentials: [newCredential], // see below
         challenge: new Uint8Array([ // must be a cryptographically random number sent from a server
             0x79, 0x50, 0x68, 0x71, 0xDA, 0xEE, 0xEE, 0xB9, 0x94, 0xC3, 0xC2, 0x15, 0x67, 0x65, 0x26, 0x22,
             0xE3, 0xF3, 0xAB, 0x3B, 0x78, 0x2E, 0xD5, 0x6F, 0x81, 0x26, 0xE2, 0xA6, 0x01, 0x7D, 0x74, 0x50
@@ -50,7 +50,7 @@ navigator.credentials.create(createCredentialDefaultArgs)
         // but we can just copy them from above...
         var idList = [{
             id: cred.rawId,
-            transports: ["usb", "nfc", "ble"],
+            transports: ["internal"],
             type: "public-key"
         }];
         getCredentialDefaultArgs.publicKey.allowCredentials = idList;
