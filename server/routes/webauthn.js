@@ -139,7 +139,11 @@ router.post('/response', (request, response) => {
     });
     database[simpleSession.username].registered = true
 
+    console.error('=============================')
+    console.error('=============================')
     console.error(database)
+    console.error('=============================')
+    console.error('=============================')
 
     response.json({
         'status': 'OK',
