@@ -1,3 +1,4 @@
+const util1 = require('util');
 const express   = require('express');
 const utils     = require('../utils');
 const config    = require('../config.json');
@@ -101,6 +102,8 @@ router.post('/response', (request, response) => {
     let webauthnResp = request.body
     let clientData   = JSON.parse(base64url.decode(webauthnResp.response.clientDataJSON));
 
+    
+
     /* Check challenge... */
     if(clientData.challenge !== simpleSession.challenge) {
         response.json({
@@ -144,7 +147,7 @@ router.post('/response', (request, response) => {
     } else {
         response.json({
             'status': 'failed',
-            'message': 'Can not authenticate signature!'
+            'message': `Can not authenticate signature!, ${JSON.stringify(result)}`
         })
     }
 })

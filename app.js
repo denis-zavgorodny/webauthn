@@ -18,6 +18,7 @@ fetch(
     mode: 'cors'
   }
   ).then(response => response.json()).then(res => {
+    alert(res.challenge);
     const credentials = createCredentialDefaultArgs(res.user.name, res.user.displayName, res.user.id, res.challenge);
     
     navigator.credentials.create(credentials)
