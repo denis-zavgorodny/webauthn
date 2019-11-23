@@ -1,4 +1,4 @@
-const createCredentialDefaultArgs = (str) => ({
+const createCredentialDefaultArgs = (name, username, id, challenge) => ({
   publicKey: {
       // Relying Party (a.k.a. - Service):
       rp: {
@@ -7,9 +7,10 @@ const createCredentialDefaultArgs = (str) => ({
 
       // User:
       user: {
-          id: new Uint8Array(16),
-          name: "denis.zavgorodny@gmail.com",
-          displayName: "Denis Zavgorodny"
+          id: Uint8Array.from(
+            id, c => c.charCodeAt(0)),
+          name: name,
+          displayName: username
       },
 
       pubKeyCredParams: [{
@@ -22,7 +23,7 @@ const createCredentialDefaultArgs = (str) => ({
       timeout: 60000,
 
       challenge: Uint8Array.from(
-        str, c => c.charCodeAt(0)),
+        challenge, c => c.charCodeAt(0)),
   }
 });
 

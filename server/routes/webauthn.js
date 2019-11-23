@@ -4,11 +4,17 @@ const config    = require('../config.json');
 const base64url = require('base64url');
 const router    = express.Router();
 const database  = require('./db');
+const simpleSession  = require('./session');
 
-router.get('/hello', (request, response) => {
-  response.json({
-    randomString: '111'
-  })
+router.get('/test', (request, response) => {
+  simpleSession.test = 1111;
+
+  response.json({ok: true})
+})
+
+router.get('/test1', (request, response) => {
+
+  response.json({res: simpleSession.test})
 })
 
 router.post('/register', (request, response) => {
@@ -42,9 +48,10 @@ router.post('/register', (request, response) => {
 
     let challengeMakeCred    = utils.generateServerMakeCredRequest(username, name, database[username].id)
     challengeMakeCred.status = 'ok'
+    challengeMakeCred.base = database
 
-    request.session.challenge = challengeMakeCred.challenge;
-    request.session.username  = username;
+    simpleSession.challenge = challengeMakeCred.challenge;
+    simpleSession.username  = username;
 
     response.json(challengeMakeCred)
 })
@@ -73,8 +80,8 @@ router.post('/login', (request, response) => {
     let getAssertion    = utils.generateServerGetAssertion(database[username].authenticators)
     getAssertion.status = 'ok'
 
-    request.session.challenge = getAssertion.challenge;
-    request.session.username  = username;
+    simpleSession.challenge = getAssertion.challenge;
+    simpleSession.username  = username;
 
     response.json(getAssertion)
 })
@@ -95,11 +102,12 @@ router.post('/response', (request, response) => {
     let clientData   = JSON.parse(base64url.decode(webauthnResp.response.clientDataJSON));
 
     /* Check challenge... */
-    if(clientData.challenge !== request.session.challenge) {
+    if(clientData.challenge !== simpleSession.challenge) {
         response.json({
             'status': 'failed',
-            'message': 'Challenges don\'t match!'
+            'message': `Challenges don\'t match! ${clientData.challenge} but ${simpleSession.challenge}`
         })
+        return
     }
 
     /* ...and origin */
@@ -108,6 +116,7 @@ router.post('/response', (request, response) => {
             'status': 'failed',
             'message': 'Origins don\'t match!'
         })
+        return
     }
 
     let result;
@@ -116,12 +125,12 @@ router.post('/response', (request, response) => {
         result = utils.verifyAuthenticatorAttestationResponse(webauthnResp);
 
         if(result.verified) {
-            database[request.session.username].authenticators.push(result.authrInfo);
-            database[request.session.username].registered = true
+            database[simpleSession.username].authenticators.push(result.authrInfo);
+            database[simpleSession.username].registered = true
         }
     } else if(webauthnResp.response.authenticatorData !== undefined) {
         /* This is get assertion */
-        result = utils.verifyAuthenticatorAssertionResponse(webauthnResp, database[request.session.username].authenticators);
+        result = utils.verifyAuthenticatorAssertionResponse(webauthnResp, database[simpleSession.username].authenticators);
     } else {
         response.json({
             'status': 'failed',
@@ -130,7 +139,7 @@ router.post('/response', (request, response) => {
     }
 
     if(result.verified) {
-        request.session.loggedIn = true;
+        simpleSession.loggedIn = true;
         response.json({ 'status': 'ok' })
     } else {
         response.json({
