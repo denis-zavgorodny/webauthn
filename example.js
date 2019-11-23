@@ -3,14 +3,14 @@ var createCredentialDefaultArgs = {
     publicKey: {
         // Relying Party (a.k.a. - Service):
         rp: {
-            name: "Acme"
+            name: "Home test"
         },
 
         // User:
         user: {
             id: new Uint8Array(16),
-            name: "john.p.smith@example.com",
-            displayName: "John P. Smith"
+            name: "denis.zavgorodny@gmail.com",
+            displayName: "Denis Zavgorodny"
         },
 
         pubKeyCredParams: [{
@@ -53,6 +53,7 @@ navigator.credentials.create(createCredentialDefaultArgs)
             transports: ["internal"],
             type: "public-key"
         }];
+        console.log(idList);
         getCredentialDefaultArgs.publicKey.allowCredentials = idList;
         return navigator.credentials.get(getCredentialDefaultArgs);
     })
