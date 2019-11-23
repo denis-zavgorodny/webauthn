@@ -1,6 +1,6 @@
+import base64url from "base64url";
 import createCredentialDefaultArgs from './client/helpers/create-credentials';
 import publicKeyCredentialToJSON from './client/helpers/public-key-credential-to-json';
-
 
 // get 
 fetch(
@@ -18,12 +18,9 @@ fetch(
     mode: 'cors'
   }
   ).then(response => response.json()).then(res => {
-    alert(res.challenge);
     const credentials = createCredentialDefaultArgs(res.user.name, res.user.displayName, res.user.id, res.challenge);
-    
     navigator.credentials.create(credentials)
       .then((cred) => {
-          console.log("NEW CREDENTIAL", cred);
           fetch(
             'http://localhost:3000/webauthn/response',
             {
@@ -35,11 +32,8 @@ fetch(
               },
               mode: 'cors'
             }
-          ).then();
-          
-          
-          //id, rawId, response, type
-          // normally the credential IDs available for an account would come from a server
-          // but we can just copy them from above...
+          ).then(res => res.json()).then(response => {
+            if(response.status === 'ok') alert('we created a key');
+          });
       })
 });

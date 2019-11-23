@@ -1,3 +1,4 @@
+const CBOR = require('cbor');
 const util1 = require('util');
 const express   = require('express');
 const utils     = require('../utils');
@@ -101,55 +102,59 @@ router.post('/response', (request, response) => {
 
     let webauthnResp = request.body
     let clientData   = JSON.parse(base64url.decode(webauthnResp.response.clientDataJSON));
-
+    const _challenge = base64url.toBuffer(clientData.challenge);
     
 
     /* Check challenge... */
-    if(clientData.challenge !== simpleSession.challenge) {
+    if(_challenge != simpleSession.challenge) {
         response.json({
             'status': 'failed',
-            'message': `Challenges don\'t match! ${clientData.challenge} but ${simpleSession.challenge}`
+            'message': `Challenges don\'t match! ${_challenge} but ${simpleSession.challenge}`
         })
         return
     }
 
-    /* ...and origin */
-    if(clientData.origin !== config.origin) {
-        response.json({
-            'status': 'failed',
-            'message': 'Origins don\'t match!'
-        })
-        return
-    }
+    // /* ...and origin */
+    // if(clientData.origin !== config.origin) {
+    //     response.json({
+    //         'status': 'failed',
+    //         'message': 'Origins don\'t match!'
+    //     })
+    //     return
+    // }
 
-    let result;
-    if(webauthnResp.response.attestationObject !== undefined) {
-        /* This is create cred */
-        result = utils.verifyAuthenticatorAttestationResponse(webauthnResp);
+    const decodedAttestationObj = CBOR.decode(
+        base64url.toBuffer(webauthnResp.response.attestationObject));
+    
+    // console.error(decodedAttestationObj);
+    const { authData } = decodedAttestationObj;
 
-        if(result.verified) {
-            database[simpleSession.username].authenticators.push(result.authrInfo);
-            database[simpleSession.username].registered = true
-        }
-    } else if(webauthnResp.response.authenticatorData !== undefined) {
-        /* This is get assertion */
-        result = utils.verifyAuthenticatorAssertionResponse(webauthnResp, database[simpleSession.username].authenticators);
-    } else {
-        response.json({
-            'status': 'failed',
-            'message': 'Can not determine type of response!'
-        })
-    }
+    // get the length of the credential ID
+    const dataView = new DataView(new ArrayBuffer(2));
+    const idLenBytes = authData.slice(53, 55);
+    idLenBytes.forEach((value, index) => dataView.setUint8(index, value));
+    const credentialIdLength = dataView.getUint16();
+    // get the credential ID
+    const credentialId = authData.slice(55, credentialIdLength);
+    // get the public key object
+    const publicKeyBytes = authData.slice(55 + credentialIdLength);
+    // the publicKeyBytes are encoded again as CBOR
+    const publicKeyObject = CBOR.decode(publicKeyBytes);
+    console.error(publicKeyObject)
 
-    if(result.verified) {
-        simpleSession.loggedIn = true;
-        response.json({ 'status': 'ok' })
-    } else {
-        response.json({
-            'status': 'failed',
-            'message': `Can not authenticate signature!, ${JSON.stringify(result)}`
-        })
-    }
+    
+
+    database[simpleSession.username].authenticators.push({
+        publicKeyBytes,
+        credentialId
+    });
+    database[simpleSession.username].registered = true
+
+    response.json({
+        'status': 'OK',
+        'message': 'OK'
+    })
+
 })
 
 module.exports = router;

@@ -1,6 +1,7 @@
 import base64url from "base64url";
 
 const publicKeyCredentialToJSON = (pubKeyCred) => {
+  const utf8Decoder = new TextDecoder('utf-8');
   if(pubKeyCred instanceof Array) {
       let arr = [];
       for(let i of pubKeyCred)
@@ -10,7 +11,8 @@ const publicKeyCredentialToJSON = (pubKeyCred) => {
   }
 
   if(pubKeyCred instanceof ArrayBuffer) {
-      return base64url.encode(pubKeyCred)
+    // return utf8Decoder.decode(pubKeyCred)
+    return base64url.encode(pubKeyCred)
   }
 
   if(pubKeyCred instanceof Object) {
