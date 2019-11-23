@@ -114,19 +114,9 @@ router.post('/response', (request, response) => {
         return
     }
 
-    // /* ...and origin */
-    // if(clientData.origin !== config.origin) {
-    //     response.json({
-    //         'status': 'failed',
-    //         'message': 'Origins don\'t match!'
-    //     })
-    //     return
-    // }
-
     const decodedAttestationObj = CBOR.decode(
         base64url.toBuffer(webauthnResp.response.attestationObject));
     
-    // console.error(decodedAttestationObj);
     const { authData } = decodedAttestationObj;
 
     // get the length of the credential ID
@@ -140,7 +130,6 @@ router.post('/response', (request, response) => {
     const publicKeyBytes = authData.slice(55 + credentialIdLength);
     // the publicKeyBytes are encoded again as CBOR
     const publicKeyObject = CBOR.decode(publicKeyBytes);
-    console.error(publicKeyObject)
 
     
 
@@ -149,6 +138,8 @@ router.post('/response', (request, response) => {
         credentialId
     });
     database[simpleSession.username].registered = true
+
+    console.error(database)
 
     response.json({
         'status': 'OK',
