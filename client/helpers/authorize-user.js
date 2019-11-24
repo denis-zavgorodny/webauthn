@@ -36,8 +36,8 @@ const authorizeUser = (name) => {
               },
               mode: 'cors'
             }
-          ).then(res => res.json()).then(response => {
-            if(response.status === 'OK') alert(`User ${res.user.id} has been authrized`);
+          ).then(res1 => res1.json()).then(response => {
+            if(response.status === 'OK') alert(`User has been authrized`);
           });
       }).catch(e => console.log(e));
       

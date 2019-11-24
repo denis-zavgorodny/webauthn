@@ -166,9 +166,10 @@ router.post('/login-response', (request, response) => {
     }
 
     let webauthnResp = request.body
+    const result = utils.verifyAuthenticatorAssertionResponse(webauthnResp, database[simpleSession.username].authenticators);
     
     
-
+    // console.error(result);
     
 
     response.json({

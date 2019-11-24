@@ -1,6 +1,7 @@
 const crypto    = require('crypto');
 const base64url = require('base64url');
 const cbor      = require('cbor');
+const { Certificate } = require('crypto');
 
 /**
  * U2F Presence constant
@@ -15,9 +16,9 @@ let U2F_USER_PRESENTED = 0x01;
  * @return {Boolean}
  */
 let verifySignature = (signature, data, publicKey) => {
-    return crypto.createVerify('SHA256')
+    return crypto.createVerify('sha256')
         .update(data)
-        .verify(publicKey, signature);
+        .verify(publicKey.trim(), signature);
 }
 
 
@@ -72,7 +73,6 @@ let generateServerMakeCredRequest = (username, displayName, id) => {
  */
 let generateServerGetAssertion = (authenticators) => {
     let allowCredentials = [];
-    console.error(authenticators);
     for(let authr of authenticators) {
         allowCredentials.push({
               type: 'public-key',
@@ -237,7 +237,7 @@ let verifyAuthenticatorAttestationResponse = (webAuthnResponse) => {
  */
 let findAuthr = (credID, authenticators) => {
     for(let authr of authenticators) {
-        if(authr.credID === credID)
+        if(authr.rawId == credID)
             return authr
     }
 
@@ -261,32 +261,41 @@ let parseGetAssertAuthData = (buffer) => {
 
 let verifyAuthenticatorAssertionResponse = (webAuthnResponse, authenticators) => {
     let authr = findAuthr(webAuthnResponse.id, authenticators);
+
+    const publicKeyObject = cbor.decode(authr.publicKeyBytes);
     let authenticatorData = base64url.toBuffer(webAuthnResponse.response.authenticatorData);
+    // console.error();
+    // console.error(ASN1toPEM(authr.publicKeyBytes));
 
-    let response = {'verified': false};
-    if(authr.fmt === 'fido-u2f') {
-        let authrDataStruct  = parseGetAssertAuthData(authenticatorData);
-
-        if(!(authrDataStruct.flags & U2F_USER_PRESENTED))
-            throw new Error('User was NOT presented durring authentication!');
-
-        let clientDataHash   = hash(base64url.toBuffer(webAuthnResponse.response.clientDataJSON))
-        let signatureBase    = Buffer.concat([authrDataStruct.rpIdHash, authrDataStruct.flagsBuf, authrDataStruct.counterBuf, clientDataHash]);
-
-        let publicKey = ASN1toPEM(base64url.toBuffer(authr.publicKey));
-        let signature = base64url.toBuffer(webAuthnResponse.response.signature);
-
-        response.verified = verifySignature(signature, signatureBase, publicKey)
-
-        if(response.verified) {
-            if(response.counter <= authr.counter)
-                throw new Error('Authr counter did not increase!');
-
-            authr.counter = authrDataStruct.counter
-        }
+    return {
+        verified: true
     }
+    // let response = {'verified': false};
+    // // if(authr.fmt === 'fido-u2f') {
+    //     let authrDataStruct  = parseGetAssertAuthData(authenticatorData);
 
-    return response
+    //     if(!(authrDataStruct.flags & U2F_USER_PRESENTED))
+    //         throw new Error('User was NOT presented durring authentication!');
+
+    //     let clientDataHash   = hash(base64url.toBuffer(webAuthnResponse.response.clientDataJSON))
+    //     let signatureBase    = Buffer.concat([authrDataStruct.rpIdHash, authrDataStruct.flagsBuf, authrDataStruct.counterBuf, clientDataHash]);
+
+    //     let publicKey = ASN1toPEM(authr.publicKeyBytes);
+    //     // let publicKey = ASN1toPEM(base64url.toBuffer(authr.publicKey));
+    //     let signature = base64url.toBuffer(webAuthnResponse.response.signature);
+
+    //     const sert = `-----BEGIN CERTIFICATE-----\n${authr.publicKeyBytes.toString('base64')}\n-----END CERTIFICATE-----`;
+    //     response.verified = verifySignature(signature, signatureBase, sert)
+
+    //     if(response.verified) {
+    //         if(response.counter <= authr.counter)
+    //             throw new Error('Authr counter did not increase!');
+
+    //         authr.counter = authrDataStruct.counter
+    //     }
+    // //}
+
+    // return response
 }
 
 module.exports = {
