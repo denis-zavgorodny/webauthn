@@ -134,6 +134,7 @@ router.post('/register-response', (request, response) => {
 
     database[simpleSession.username].authenticators.push({
         publicKeyBytes,
+        publicKeyObject,
         credentialId,
         rawId: webauthnResp.rawId
     });
