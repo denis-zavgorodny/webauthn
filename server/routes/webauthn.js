@@ -88,7 +88,7 @@ router.post('/login', (request, response) => {
     response.json(getAssertion)
 })
 
-router.post('/response', (request, response) => {
+router.post('/register-response', (request, response) => {
     if(!request.body       || !request.body.id
     || !request.body.rawId || !request.body.response
     || !request.body.type  || request.body.type !== 'public-key' ) {
@@ -103,7 +103,6 @@ router.post('/response', (request, response) => {
     let webauthnResp = request.body
     let clientData   = JSON.parse(base64url.decode(webauthnResp.response.clientDataJSON));
     const _challenge = base64url.toBuffer(clientData.challenge);
-    
 
     /* Check challenge... */
     if(_challenge != simpleSession.challenge) {
@@ -135,7 +134,8 @@ router.post('/response', (request, response) => {
 
     database[simpleSession.username].authenticators.push({
         publicKeyBytes,
-        credentialId
+        credentialId,
+        rawId: webauthnResp.rawId
     });
     database[simpleSession.username].registered = true
 
@@ -148,6 +148,32 @@ router.post('/response', (request, response) => {
     response.json({
         'status': 'OK',
         'message': 'OK'
+    })
+
+})
+
+
+router.post('/login-response', (request, response) => {
+    if(!request.body       || !request.body.id
+    || !request.body.rawId || !request.body.response
+    || !request.body.type  || request.body.type !== 'public-key' ) {
+        response.json({
+            'status': 'failed',
+            'message': 'Response missing one or more of id/rawId/response/type fields, or type is not public-key!'
+        })
+
+        return
+    }
+
+    let webauthnResp = request.body
+    
+    
+
+    
+
+    response.json({
+        'status': 'OK',
+        'data': webauthnResp
     })
 
 })

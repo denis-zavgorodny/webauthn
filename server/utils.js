@@ -72,11 +72,12 @@ let generateServerMakeCredRequest = (username, displayName, id) => {
  */
 let generateServerGetAssertion = (authenticators) => {
     let allowCredentials = [];
+    console.error(authenticators);
     for(let authr of authenticators) {
         allowCredentials.push({
               type: 'public-key',
-              id: authr.credID,
-              transports: ['usb', 'nfc', 'ble']
+              id: authr.rawId,
+              transports: ['internal']
         })
     }
     return {

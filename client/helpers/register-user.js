@@ -2,7 +2,6 @@ import createCredentialDefaultArgs from './create-credentials';
 import publicKeyCredentialToJSON from './public-key-credential-to-json';
 
 const registerUser = (name) => {
-  // get 
   fetch(
     'http://localhost:3000/webauthn/register',
     {
@@ -26,7 +25,7 @@ const registerUser = (name) => {
       navigator.credentials.create(credentials)
         .then((cred) => {
             fetch(
-              'http://localhost:3000/webauthn/response',
+              'http://localhost:3000/webauthn/register-response',
               {
                 method: 'POST', 
                 credentials: "same-origin",
@@ -37,7 +36,7 @@ const registerUser = (name) => {
                 mode: 'cors'
               }
             ).then(res => res.json()).then(response => {
-              if(response.status === 'OK') alert('User has been created');
+              if(response.status === 'OK') alert(`User ${res.user.id} has been created`);
             });
         })
   });
