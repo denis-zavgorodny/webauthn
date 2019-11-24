@@ -50,7 +50,7 @@ navigator.credentials.create(createCredentialDefaultArgs)
         // but we can just copy them from above...
         var idList = [{
             id: cred.rawId,
-            transports: ["internal"],
+            transports: ["internal", "usb"],
             type: "public-key"
         }];
         console.log(idList);

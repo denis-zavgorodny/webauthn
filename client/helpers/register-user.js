@@ -36,7 +36,9 @@ const registerUser = (name) => {
                 mode: 'cors'
               }
             ).then(res => res.json()).then(response => {
-              if(response.status === 'OK') alert(`User ${res.user.id} has been created`);
+              if(response.status === 'OK') {
+                document.getElementById('info').innerText = `User ${res.user.id} has been created`;
+              }
             });
         })
   });
