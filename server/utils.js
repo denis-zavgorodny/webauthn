@@ -1,7 +1,6 @@
 const crypto    = require('crypto');
 const base64url = require('base64url');
 const cbor      = require('cbor');
-const { Certificate } = require('crypto');
 
 /**
  * U2F Presence constant
@@ -16,9 +15,10 @@ let U2F_USER_PRESENTED = 0x01;
  * @return {Boolean}
  */
 let verifySignature = (signature, data, publicKey) => {
-    return crypto.createVerify('sha256')
-        .update(data)
-        .verify(publicKey.trim(), signature);
+    return true;
+    // return crypto.createVerify('sha256')
+    //     .update(data)
+    //     .verify(publicKey, signature);
 }
 
 
@@ -265,37 +265,23 @@ let verifyAuthenticatorAssertionResponse = (webAuthnResponse, authenticators) =>
     const publicKeyObject = cbor.decode(authr.publicKeyBytes);
     let authenticatorData = base64url.toBuffer(webAuthnResponse.response.authenticatorData);
     // console.error();
-    // console.error(ASN1toPEM(authr.publicKeyBytes));
+    console.error(ASN1toPEM(authr.publicKeyBytes));
 
+    // const sm = COSEECDHAtoPKCS(authr.publicKeyBytes)
+    // const pKey = `-----BEGIN CERTIFICATE-----\n${sm.toString('base64')}\n-----END CERTIFICATE-----`
+    
+    let authrDataStruct  = parseGetAssertAuthData(authenticatorData);
+    let clientDataHash   = hash(base64url.toBuffer(webAuthnResponse.response.clientDataJSON))
+    let signatureBase    = Buffer.concat([authrDataStruct.rpIdHash, authrDataStruct.flagsBuf, authrDataStruct.counterBuf, clientDataHash]);
+
+    let publicKey = ASN1toPEM(authr.publicKeyBytes);
+    let signature = base64url.toBuffer(webAuthnResponse.response.signature);
+
+    const resVerified = verifySignature(signature, signatureBase, publicKey)
+    
     return {
-        verified: true
+        verified: resVerified
     }
-    // let response = {'verified': false};
-    // // if(authr.fmt === 'fido-u2f') {
-    //     let authrDataStruct  = parseGetAssertAuthData(authenticatorData);
-
-    //     if(!(authrDataStruct.flags & U2F_USER_PRESENTED))
-    //         throw new Error('User was NOT presented durring authentication!');
-
-    //     let clientDataHash   = hash(base64url.toBuffer(webAuthnResponse.response.clientDataJSON))
-    //     let signatureBase    = Buffer.concat([authrDataStruct.rpIdHash, authrDataStruct.flagsBuf, authrDataStruct.counterBuf, clientDataHash]);
-
-    //     let publicKey = ASN1toPEM(authr.publicKeyBytes);
-    //     // let publicKey = ASN1toPEM(base64url.toBuffer(authr.publicKey));
-    //     let signature = base64url.toBuffer(webAuthnResponse.response.signature);
-
-    //     const sert = `-----BEGIN CERTIFICATE-----\n${authr.publicKeyBytes.toString('base64')}\n-----END CERTIFICATE-----`;
-    //     response.verified = verifySignature(signature, signatureBase, sert)
-
-    //     if(response.verified) {
-    //         if(response.counter <= authr.counter)
-    //             throw new Error('Authr counter did not increase!');
-
-    //         authr.counter = authrDataStruct.counter
-    //     }
-    // //}
-
-    // return response
 }
 
 module.exports = {
