@@ -58,16 +58,6 @@ const hash = (alg, message) => {
     .digest();
 };
 
-const base64ToPem = b64cert => {
-  let pemcert = "";
-  for (let i = 0; i < b64cert.length; i += 64)
-    pemcert += b64cert.slice(i, i + 64) + "\n";
-
-  return (
-    "-----BEGIN CERTIFICATE-----\n" + pemcert + "-----END CERTIFICATE-----"
-  );
-};
-
 
 const parseAuthData = buffer => {
   let rpIdHash = buffer.slice(0, 32);
@@ -119,6 +109,7 @@ const getKey = webAuthnResponse => {
   let attestationBuffer = base64url.toBuffer(
     webAuthnResponse.response.attestationObject
   );
+  console.log(cbor.decodeAllSync(attestationBuffer));
   let attestationStruct = cbor.decodeAllSync(attestationBuffer)[0];
 
   let authDataStruct = parseAuthData(attestationStruct.authData);
@@ -131,16 +122,14 @@ const getKey = webAuthnResponse => {
     attestationStruct.authData,
     clientDataHashBuf
   ]);
-
   let signatureBuffer = attestationStruct.attStmt.sig;
-  let signatureIsValid = false;
+
 
   if (attestationStruct.attStmt.x5c) {
     throw new Error("ECDAA IS NOT SUPPORTED YET!");
   } else if (attestationStruct.attStmt.ecdaaKeyId) {
     throw new Error("ECDAA IS NOT SUPPORTED YET!");
   } else {
-    /* ----- Verify SURROGATE attestation ----- */
     let pubKeyCose = cbor.decodeAllSync(authDataStruct.COSEPublicKey)[0];
     let hashAlg = COSEALGHASH[pubKeyCose.get(COSEKEYS.alg)];
     if (pubKeyCose.get(COSEKEYS.kty) === COSEKTY.EC2) {
@@ -148,11 +137,21 @@ const getKey = webAuthnResponse => {
       let y = pubKeyCose.get(COSEKEYS.y);
 
       let ansiKey = Buffer.concat([Buffer.from([0x04]), x, y]);
+      const keyString = ansiKey.toString("base64");
+
+      let signatureBaseHash = hash(hashAlg, signatureBaseBuffer);
+
+
 
       let ec = new elliptic.ec(COSECRV[pubKeyCose.get(COSEKEYS.crv)]);
       let key = ec.keyFromPublic(ansiKey);
 
-      return key;
+    //   signatureIsValid = key.verify(signatureBaseHash, signatureBuffer);
+
+      return {
+        key,
+        keyString
+      };
     } else if (pubKeyCose.get(COSEKEYS.kty) === COSEKTY.RSA) {
       let signingScheme = COSERSASCHEME[pubKeyCose.get(COSEKEYS.alg)];
 

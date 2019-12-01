@@ -5,7 +5,7 @@ const authorizeUser = (name) => {
   fetch(
     'http://localhost:3000/webauthn/login',
     {
-      method: 'POST', 
+      method: 'POST',
       body: JSON.stringify({
         name,
         username: name
@@ -24,11 +24,12 @@ const authorizeUser = (name) => {
       const { allowCredentials, challenge } = res;
       const credentials = getCredentialDefaultArgs(challenge, allowCredentials);
       navigator.credentials.get(credentials).then(assertion => {
+          console.log('=====>', assertion);
         // assertion has been created
           fetch(
             'http://localhost:3000/webauthn/login-response',
             {
-              method: 'POST', 
+              method: 'POST',
               credentials: "same-origin",
               body: JSON.stringify(publicKeyCredentialToJSON(assertion)),
               headers: {
@@ -42,7 +43,7 @@ const authorizeUser = (name) => {
             }
           });
       }).catch(e => console.log(e));
-      
+
   });
 }
 

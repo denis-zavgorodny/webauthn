@@ -5,7 +5,7 @@ const registerUser = (name) => {
   fetch(
     'http://localhost:3000/webauthn/register',
     {
-      method: 'POST', 
+      method: 'POST',
       body: JSON.stringify({
         name,
         username: name
@@ -24,10 +24,11 @@ const registerUser = (name) => {
       const credentials = createCredentialDefaultArgs(res.user.name, res.user.displayName, res.user.id, res.challenge);
       navigator.credentials.create(credentials)
         .then((cred) => {
+            console.log("====>", cred);
             fetch(
               'http://localhost:3000/webauthn/register-response',
               {
-                method: 'POST', 
+                method: 'POST',
                 credentials: "same-origin",
                 body: JSON.stringify(publicKeyCredentialToJSON(cred)),
                 headers: {

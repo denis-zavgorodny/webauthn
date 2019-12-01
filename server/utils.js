@@ -15,11 +15,11 @@ let U2F_USER_PRESENTED = 0x01;
  * @return {Boolean}
  */
 let verifySignature = (signature, data, key) => {
-    console.log(key.verify(data, signature));
-    return true;
-    // return crypto.createVerify('sha256')
-    //     .update(data)
-    //     .verify(publicKey, signature);
+    return key.verify(data, signature);
+    // return crypto
+    //   .createVerify("sha256")
+    //   .update(data)
+    //   .verify(key, signature);
 }
 
 
@@ -235,11 +235,21 @@ let verifyAuthenticatorAssertionResponse = (webAuthnResponse, authenticators) =>
 
     let authrDataStruct  = parseGetAssertAuthData(authenticatorData);
     let clientDataHash   = hash(base64url.toBuffer(webAuthnResponse.response.clientDataJSON))
-    let signatureBase    = Buffer.concat([authrDataStruct.rpIdHash, authrDataStruct.flagsBuf, authrDataStruct.counterBuf, clientDataHash]);
+
+    let signatureBase = Buffer.concat([
+      authrDataStruct.rpIdHash,
+      authrDataStruct.flagsBuf,
+      authrDataStruct.counterBuf,
+      clientDataHash
+    ]);
 
     let signature = base64url.toBuffer(webAuthnResponse.response.signature);
 
-    const resVerified = verifySignature(signature, signatureBase, authr.key)
+    const resVerified = verifySignature(
+      signature,
+      signatureBase,
+      authr.key.key
+    );
 
     return {
         verified: resVerified

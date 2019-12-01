@@ -133,6 +133,9 @@ router.post('/register-response', (request, response) => {
     const publicKeyObject = CBOR.decode(publicKeyBytes);
 
     const key = helpers.getKey(webauthnResp);
+    //key.key.verify(data, signature);
+    // console.log(publicKeyObject);
+    // console.log(key.getPublic());
 
     database[simpleSession.username].authenticators.push({
       publicKeyBytes,
@@ -173,13 +176,11 @@ router.post('/login-response', (request, response) => {
 
     const result = utils.verifyAuthenticatorAssertionResponse(webauthnResp, database[simpleSession.username].authenticators);
 
-
-
-
     response.json({
-        'status': 'OK',
-        'data': webauthnResp
-    })
+      ...result,
+      status: "OK",
+      data: webauthnResp
+    });
 
 })
 
