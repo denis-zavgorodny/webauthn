@@ -1,16 +1,10 @@
 const CBOR = require('cbor');
-const util1 = require('util');
 const express   = require('express');
 const utils     = require('../utils');
-const config    = require('../config.json');
 const base64url = require('base64url');
 const router    = express.Router();
 const database  = require('./db');
 const simpleSession  = require('./session');
-const ECKey = require("ec-key");
-const helpers = require('../helpers');
-const NodeRSA = require("node-rsa");
-const crypto = require("crypto");
 
 router.get('/test', (request, response) => {
   simpleSession.test = 1111;
