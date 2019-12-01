@@ -19,6 +19,7 @@
   "homepage": "https://github.com/denis-zavgorodny/webauthn#readme",
   "dependencies": {
     "base64url": "^2.0.0",
+    "json2html": "0.0.8",
     "parcel-bundler": "^1.12.4"
   }
 }

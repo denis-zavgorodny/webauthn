@@ -133,19 +133,14 @@ router.post('/register-response', (request, response) => {
     // the publicKeyBytes are encoded again as CBOR
     const publicKeyObject = CBOR.decode(publicKeyBytes);
 
-    const key = helpers.getKey(webauthnResp);
-
-    const key2String = utils.ASN1toPEM(utils.COSEECDHAtoPKCS(publicKeyBytes));
+    const keyString = utils.ASN1toPEM(utils.COSEECDHAtoPKCS(publicKeyBytes));
 
 
     database[simpleSession.username].authenticators.push({
       publicKeyBytes,
       publicKeyObject,
       credentialId,
-      key: {
-        ...key,
-        key2String
-      },
+      keyString,
       rawId: webauthnResp.rawId
     });
     database[simpleSession.username].registered = true
@@ -159,7 +154,8 @@ router.post('/register-response', (request, response) => {
     response.json({
       status: "OK",
       message: "OK",
-      key: key2String
+      key: keyString,
+      database
     });
 
 })

@@ -5,6 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <script type="text/javascript">
+        var j2h = {
+            toggleVisibility: function (el, name) {
+                j2h.toggleClass(el.parentElement, 'j2hcollapse j2hexpand');
+            },
+            classRe: function (name) {
+                return new RegExp('(?:^|\\s)' + name + '(?!\\S)');
+            },
+            addClass: function (el, name) {
+                el.className += " " + name;
+            },
+            removeClass: function (el, name) {
+                var re = j2h.classRe(name);
+                el.className = el.className.replace(j2h.classRe(name), '')
+            },
+            hasClass: function (el, name) {
+                var re = j2h.classRe(name);
+                return j2h.classRe(name).exec(el.className);
+            },
+            toggleClass: function (el, name) {
+                var names = name.split(/\s+/);
+                for (n in names) {
+                    if (j2h.hasClass(el, names[n])) {
+                        j2h.removeClass(el, names[n]);
+                    } else {
+                        j2h.addClass(el, names[n]);
+                    }
+                }
+            }
+        };
+    </script>
 </head>
 <body>
     <form>
@@ -13,6 +44,8 @@
         <button type="button" id="authorizationButton">Authorization</button>
     </form>
     <div id="info"></div>
+    <hr />
+    <div id="dump"></div>
 
     <script src="./app.js"></script>
 </body>

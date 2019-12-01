@@ -20,7 +20,7 @@ let verifySignature = (signature, data, key) => {
     return crypto
       .createVerify("sha256")
       .update(data)
-      .verify(key.key2String, signature);
+      .verify(key, signature);
 }
 
 
@@ -249,7 +249,7 @@ let verifyAuthenticatorAssertionResponse = (webAuthnResponse, authenticators) =>
     const resVerified = verifySignature(
       signature,
       signatureBase,
-      authr.key
+      authr.keyString
     );
 
     return {

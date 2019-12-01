@@ -1,5 +1,6 @@
 import createCredentialDefaultArgs from './create-credentials';
 import publicKeyCredentialToJSON from './public-key-credential-to-json';
+import json2html from "json2html";
 
 const registerUser = (name) => {
   fetch(
@@ -41,6 +42,11 @@ const registerUser = (name) => {
                 document.getElementById(
                   "info"
                 ).innerText = `User ${res.user.id} has been created\n\n${response.key}`;
+                document.getElementById(
+                  "dump"
+                ).innerHTML = `${json2html.render(
+                  response.database
+                )}</pre>`;
               }
             });
         })
