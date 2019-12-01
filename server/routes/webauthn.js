@@ -170,7 +170,7 @@ router.post('/login-response', (request, response) => {
     let webauthnResp = request.body;
 
     const result = utils.verifyAuthenticatorAssertionResponse(webauthnResp, database[simpleSession.username].authenticators);
-    delete database[simpleSession.username];
+
     response.json({
       ...result,
       status: "OK",

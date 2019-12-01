@@ -48,7 +48,11 @@ const authorizeUser = (name) => {
                 ).innerText = `[ERROR] Access denied`;
             }
           });
-      }).catch(e => console.log(e));
+      }).catch(e => {
+        document.getElementById(
+          "info"
+          ).innerText = e.toString();
+      });
 
   });
 }
