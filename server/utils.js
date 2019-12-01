@@ -15,11 +15,12 @@ let U2F_USER_PRESENTED = 0x01;
  * @return {Boolean}
  */
 let verifySignature = (signature, data, key) => {
-    return key.verify(data, signature);
-    // return crypto
-    //   .createVerify("sha256")
-    //   .update(data)
-    //   .verify(key, signature);
+    // return key.key.verify(data, signature);
+
+    return crypto
+      .createVerify("sha256")
+      .update(data)
+      .verify(key.key2String, signature);
 }
 
 
@@ -248,7 +249,7 @@ let verifyAuthenticatorAssertionResponse = (webAuthnResponse, authenticators) =>
     const resVerified = verifySignature(
       signature,
       signatureBase,
-      authr.key.key
+      authr.key
     );
 
     return {
@@ -257,8 +258,10 @@ let verifyAuthenticatorAssertionResponse = (webAuthnResponse, authenticators) =>
 }
 
 module.exports = {
-    randomBase64URLBuffer,
-    generateServerMakeCredRequest,
-    generateServerGetAssertion,
-    verifyAuthenticatorAssertionResponse
-}
+  randomBase64URLBuffer,
+  generateServerMakeCredRequest,
+  generateServerGetAssertion,
+  verifyAuthenticatorAssertionResponse,
+  COSEECDHAtoPKCS,
+  ASN1toPEM
+};

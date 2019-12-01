@@ -38,7 +38,9 @@ const registerUser = (name) => {
               }
             ).then(res => res.json()).then(response => {
               if(response.status === 'OK') {
-                document.getElementById('info').innerText = `User ${res.user.id} has been created`;
+                document.getElementById(
+                  "info"
+                ).innerText = `User ${res.user.id} has been created\n\n${response.key}`;
               }
             });
         })

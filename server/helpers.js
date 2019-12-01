@@ -109,7 +109,7 @@ const getKey = webAuthnResponse => {
   let attestationBuffer = base64url.toBuffer(
     webAuthnResponse.response.attestationObject
   );
-  console.log(cbor.decodeAllSync(attestationBuffer));
+
   let attestationStruct = cbor.decodeAllSync(attestationBuffer)[0];
 
   let authDataStruct = parseAuthData(attestationStruct.authData);
@@ -146,11 +146,9 @@ const getKey = webAuthnResponse => {
       let ec = new elliptic.ec(COSECRV[pubKeyCose.get(COSEKEYS.crv)]);
       let key = ec.keyFromPublic(ansiKey);
 
-    //   signatureIsValid = key.verify(signatureBaseHash, signatureBuffer);
-
       return {
         key,
-        keyString
+        keyString: `-----BEGIN PUBLIC KEY-----\n${keyString}\n-----END PUBLIC KEY-----`
       };
     } else if (pubKeyCose.get(COSEKEYS.kty) === COSEKTY.RSA) {
       let signingScheme = COSERSASCHEME[pubKeyCose.get(COSEKEYS.alg)];

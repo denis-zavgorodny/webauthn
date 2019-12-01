@@ -8,7 +8,9 @@ const router    = express.Router();
 const database  = require('./db');
 const simpleSession  = require('./session');
 const ECKey = require("ec-key");
-const helpers = require('../helpers')
+const helpers = require('../helpers');
+const NodeRSA = require("node-rsa");
+const crypto = require("crypto");
 
 router.get('/test', (request, response) => {
   simpleSession.test = 1111;
@@ -86,7 +88,6 @@ router.post('/login', (request, response) => {
 
     simpleSession.challenge = getAssertion.challenge;
     simpleSession.username  = username;
-
     response.json(getAssertion)
 })
 
@@ -133,6 +134,18 @@ router.post('/register-response', (request, response) => {
     const publicKeyObject = CBOR.decode(publicKeyBytes);
 
     const key = helpers.getKey(webauthnResp);
+
+    const key2 = new NodeRSA();
+    // key2.importKey(key.keyString, "pkcs8");
+    // console.log(publicKeyObject);
+    // console.log(utils.COSEECDHAtoPKCS(publicKeyBytes).toString('base64'));
+    // crypto.createPublicKey(
+    //   utils.COSEECDHAtoPKCS(publicKeyBytes).toString("base64")
+    // );
+    const key2String = utils.ASN1toPEM(utils.COSEECDHAtoPKCS(publicKeyBytes));
+    // key2.importKey(utils.COSEECDHAtoPKCS(publicKeyBytes), "pkcs8-public");
+    // crypto.createPublicKey(key2String);
+
     //key.key.verify(data, signature);
     // console.log(publicKeyObject);
     // console.log(key.getPublic());
@@ -141,7 +154,10 @@ router.post('/register-response', (request, response) => {
       publicKeyBytes,
       publicKeyObject,
       credentialId,
-      key,
+      key: {
+        ...key,
+        key2String
+      },
       rawId: webauthnResp.rawId
     });
     database[simpleSession.username].registered = true
@@ -153,9 +169,10 @@ router.post('/register-response', (request, response) => {
     console.error('=============================')
 
     response.json({
-        'status': 'OK',
-        'message': 'OK'
-    })
+      status: "OK",
+      message: "OK",
+      key: key2String
+    });
 
 })
 
@@ -175,7 +192,7 @@ router.post('/login-response', (request, response) => {
     let webauthnResp = request.body;
 
     const result = utils.verifyAuthenticatorAssertionResponse(webauthnResp, database[simpleSession.username].authenticators);
-
+    delete database[simpleSession.username];
     response.json({
       ...result,
       status: "OK",
