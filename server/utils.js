@@ -14,7 +14,8 @@ let U2F_USER_PRESENTED = 0x01;
  * @param  {String} publicKey - PEM encoded public key
  * @return {Boolean}
  */
-let verifySignature = (signature, data, publicKey) => {
+let verifySignature = (signature, data, key) => {
+    console.log(key.verify(data, signature));
     return true;
     // return crypto.createVerify('sha256')
     //     .update(data)
@@ -102,7 +103,7 @@ let hash = (data) => {
  * @return {Buffer}               - RAW PKCS encoded public key
  */
 let COSEECDHAtoPKCS = (COSEPublicKey) => {
-    /* 
+    /*
        +------+-------+-------+---------+----------------------------------+
        | name | key   | label | type    | description                      |
        |      | type  |       |         |                                  |
@@ -149,7 +150,7 @@ let ASN1toPEM = (pkBuffer) => {
             }
             Luckily, to do that, we just need to prefix it with constant 26 bytes (metadata is constant).
         */
-        
+
         pkBuffer = Buffer.concat([
             new Buffer.from("3059301306072a8648ce3d020106082a8648ce3d030107034200", "hex"),
             pkBuffer
@@ -170,7 +171,7 @@ let ASN1toPEM = (pkBuffer) => {
     }
 
     PEMKey = `-----BEGIN ${type}-----\n` + PEMKey + `-----END ${type}-----\n`;
-    
+
     return PEMKey
 }
 
@@ -194,39 +195,7 @@ let parseMakeCredAuthData = (buffer) => {
     return {rpIdHash, flagsBuf, flags, counter, counterBuf, aaguid, credID, COSEPublicKey}
 }
 
-let verifyAuthenticatorAttestationResponse = (webAuthnResponse) => {
-    let attestationBuffer = base64url.toBuffer(webAuthnResponse.response.attestationObject);
-    let ctapMakeCredResp  = cbor.decodeAllSync(attestationBuffer)[0];
 
-    let response = {'verified': false};
-    if(ctapMakeCredResp.fmt === 'fido-u2f') {
-        let authrDataStruct = parseMakeCredAuthData(ctapMakeCredResp.authData);
-
-        if(!(authrDataStruct.flags & U2F_USER_PRESENTED))
-            throw new Error('User was NOT presented durring authentication!');
-
-        let clientDataHash  = hash(base64url.toBuffer(webAuthnResponse.response.clientDataJSON))
-        let reservedByte    = Buffer.from([0x00]);
-        let publicKey       = COSEECDHAtoPKCS(authrDataStruct.COSEPublicKey)
-        let signatureBase   = Buffer.concat([reservedByte, authrDataStruct.rpIdHash, clientDataHash, authrDataStruct.credID, publicKey]);
-
-        let PEMCertificate = ASN1toPEM(ctapMakeCredResp.attStmt.x5c[0]);
-        let signature      = ctapMakeCredResp.attStmt.sig;
-
-        response.verified = verifySignature(signature, signatureBase, PEMCertificate)
-
-        if(response.verified) {
-            response.authrInfo = {
-                fmt: 'fido-u2f',
-                publicKey: base64url.encode(publicKey),
-                counter: authrDataStruct.counter,
-                credID: base64url.encode(authrDataStruct.credID)
-            }
-        }
-    }
-
-    return response
-}
 
 
 /**
@@ -262,23 +231,16 @@ let parseGetAssertAuthData = (buffer) => {
 let verifyAuthenticatorAssertionResponse = (webAuthnResponse, authenticators) => {
     let authr = findAuthr(webAuthnResponse.id, authenticators);
 
-    const publicKeyObject = cbor.decode(authr.publicKeyBytes);
     let authenticatorData = base64url.toBuffer(webAuthnResponse.response.authenticatorData);
-    // console.error();
-    console.error(ASN1toPEM(authr.publicKeyBytes));
 
-    // const sm = COSEECDHAtoPKCS(authr.publicKeyBytes)
-    // const pKey = `-----BEGIN CERTIFICATE-----\n${sm.toString('base64')}\n-----END CERTIFICATE-----`
-    
     let authrDataStruct  = parseGetAssertAuthData(authenticatorData);
     let clientDataHash   = hash(base64url.toBuffer(webAuthnResponse.response.clientDataJSON))
     let signatureBase    = Buffer.concat([authrDataStruct.rpIdHash, authrDataStruct.flagsBuf, authrDataStruct.counterBuf, clientDataHash]);
 
-    let publicKey = ASN1toPEM(authr.publicKeyBytes);
     let signature = base64url.toBuffer(webAuthnResponse.response.signature);
 
-    const resVerified = verifySignature(signature, signatureBase, publicKey)
-    
+    const resVerified = verifySignature(signature, signatureBase, authr.key)
+
     return {
         verified: resVerified
     }
@@ -288,6 +250,5 @@ module.exports = {
     randomBase64URLBuffer,
     generateServerMakeCredRequest,
     generateServerGetAssertion,
-    verifyAuthenticatorAttestationResponse,
     verifyAuthenticatorAssertionResponse
 }

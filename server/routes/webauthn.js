@@ -7,6 +7,8 @@ const base64url = require('base64url');
 const router    = express.Router();
 const database  = require('./db');
 const simpleSession  = require('./session');
+const ECKey = require("ec-key");
+const helpers = require('../helpers')
 
 router.get('/test', (request, response) => {
   simpleSession.test = 1111;
@@ -115,7 +117,7 @@ router.post('/register-response', (request, response) => {
 
     const decodedAttestationObj = CBOR.decode(
         base64url.toBuffer(webauthnResp.response.attestationObject));
-    
+
     const { authData } = decodedAttestationObj;
 
     // get the length of the credential ID
@@ -130,13 +132,14 @@ router.post('/register-response', (request, response) => {
     // the publicKeyBytes are encoded again as CBOR
     const publicKeyObject = CBOR.decode(publicKeyBytes);
 
-    
+    const key = helpers.getKey(webauthnResp);
 
     database[simpleSession.username].authenticators.push({
-        publicKeyBytes,
-        publicKeyObject,
-        credentialId,
-        rawId: webauthnResp.rawId
+      publicKeyBytes,
+      publicKeyObject,
+      credentialId,
+      key,
+      rawId: webauthnResp.rawId
     });
     database[simpleSession.username].registered = true
 
@@ -166,12 +169,12 @@ router.post('/login-response', (request, response) => {
         return
     }
 
-    let webauthnResp = request.body
+    let webauthnResp = request.body;
+
     const result = utils.verifyAuthenticatorAssertionResponse(webauthnResp, database[simpleSession.username].authenticators);
-    
-    
-    // console.error(result);
-    
+
+
+
 
     response.json({
         'status': 'OK',

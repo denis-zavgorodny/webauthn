@@ -10,11 +10,16 @@
     "cookie-parser": "^1.4.3",
     "cookie-session": "^2.0.0-beta.3",
     "cors": "^2.8.5",
+    "ec-key": "0.0.4",
     "express": "^4.15.4"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon index.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "elliptic": "^6.5.2",
+    "nodemon": "^2.0.1"
+  }
 }
