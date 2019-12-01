@@ -135,20 +135,8 @@ router.post('/register-response', (request, response) => {
 
     const key = helpers.getKey(webauthnResp);
 
-    const key2 = new NodeRSA();
-    // key2.importKey(key.keyString, "pkcs8");
-    // console.log(publicKeyObject);
-    // console.log(utils.COSEECDHAtoPKCS(publicKeyBytes).toString('base64'));
-    // crypto.createPublicKey(
-    //   utils.COSEECDHAtoPKCS(publicKeyBytes).toString("base64")
-    // );
     const key2String = utils.ASN1toPEM(utils.COSEECDHAtoPKCS(publicKeyBytes));
-    // key2.importKey(utils.COSEECDHAtoPKCS(publicKeyBytes), "pkcs8-public");
-    // crypto.createPublicKey(key2String);
 
-    //key.key.verify(data, signature);
-    // console.log(publicKeyObject);
-    // console.log(key.getPublic());
 
     database[simpleSession.username].authenticators.push({
       publicKeyBytes,

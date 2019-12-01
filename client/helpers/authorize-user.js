@@ -38,8 +38,14 @@ const authorizeUser = (name) => {
               mode: 'cors'
             }
           ).then(res1 => res1.json()).then(response => {
-            if(response.status === 'OK') {
-              document.getElementById('info').innerText = `User has been authrized`;
+            if (response.status === "OK" && response.verified) {
+                document.getElementById(
+                "info"
+                ).innerText = `User has been authrized`;
+            } else {
+                document.getElementById(
+                    "info"
+                ).innerText = `[ERROR] Access denied`;
             }
           });
       }).catch(e => console.log(e));
