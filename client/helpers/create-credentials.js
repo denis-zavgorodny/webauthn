@@ -15,11 +15,10 @@ const createCredentialDefaultArgs = (name, username, id, challenge) => ({
 
       pubKeyCredParams: [{alg: -7, type: "public-key"}],
       authenticatorSelection: {
-          authenticatorAttachment: "platform",
-      },
-      authenticatorSelection: {
-        // Try to use UV if possible. This is also the default.
-        userVerification: "preferred"
+          authenticatorAttachment: "cross-platform", //platform
+          // Try to use UV if possible. This is also the default.
+          userVerification: "required",
+          requireResidentKey: true,
       },
       timeout: 60000,
       challenge: Uint8Array.from(challenge, c => c.charCodeAt(0)),

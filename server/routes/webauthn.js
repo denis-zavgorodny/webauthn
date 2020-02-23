@@ -86,6 +86,13 @@ router.post('/login', (request, response) => {
 })
 
 router.post('/register-response', (request, response) => {
+    console.error('>');
+    console.error('>');
+    console.error('>');
+    console.error('>');
+    console.error('>');
+    console.error('>');
+    console.error('>');
     if(!request.body       || !request.body.id
     || !request.body.rawId || !request.body.response
     || !request.body.type  || request.body.type !== 'public-key' ) {
@@ -100,6 +107,10 @@ router.post('/register-response', (request, response) => {
     let webauthnResp = request.body
     let clientData   = JSON.parse(base64url.decode(webauthnResp.response.clientDataJSON));
     const _challenge = base64url.toBuffer(clientData.challenge);
+    console.error('========clientData======');
+    console.error(clientData);
+    console.error('========clientData======');
+
 
     /* Check challenge... */
     if(_challenge != simpleSession.challenge) {
@@ -115,9 +126,24 @@ router.post('/register-response', (request, response) => {
 
     const { authData } = decodedAttestationObj;
 
+
+    let rpIdHash = authData.slice(0, 32);
+    buffer = authData.slice(32);
+    /* Flags */
+    let flagsBuffer = buffer.slice(0, 1);
+    buffer = buffer.slice(1);
+    let flagsInt = flagsBuffer[0];
+    let up = !!(flagsInt & 0x01); // Test of User Presence
+    let uv = !!(flagsInt & 0x04); // User Verification
+    let at = !!(flagsInt & 0x40); // Attestation data
+    let ed = !!(flagsInt & 0x80); // Extension data
+    let flags = { up, uv, at, ed, flagsInt };
+    console.error(flags);
+
     // get the length of the credential ID
     const dataView = new DataView(new ArrayBuffer(2));
     const idLenBytes = authData.slice(53, 55);
+
     idLenBytes.forEach((value, index) => dataView.setUint8(index, value));
     const credentialIdLength = dataView.getUint16();
     // get the credential ID
@@ -126,6 +152,7 @@ router.post('/register-response', (request, response) => {
     const publicKeyBytes = authData.slice(55 + credentialIdLength);
     // the publicKeyBytes are encoded again as CBOR
     const publicKeyObject = CBOR.decode(publicKeyBytes);
+    console.log(publicKeyObject);
 
     const keyString = utils.ASN1toPEM(utils.COSEECDHAtoPKCS(publicKeyBytes));
 

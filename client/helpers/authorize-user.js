@@ -1,9 +1,9 @@
 import getCredentialDefaultArgs from './get-credentials';
 import publicKeyCredentialToJSON from './public-key-credential-to-json';
-
+const base = `http://${window.location.hostname}:1235`;
 const authorizeUser = (name) => {
   fetch(
-    'http://localhost:3000/webauthn/login',
+      base + '/webauthn/login',
     {
       method: 'POST',
       body: JSON.stringify({
@@ -23,11 +23,12 @@ const authorizeUser = (name) => {
       }
       const { allowCredentials, challenge } = res;
       const credentials = getCredentialDefaultArgs(challenge, allowCredentials);
+        console.log(credentials);
       navigator.credentials.get(credentials).then(assertion => {
           console.log('=====>', assertion);
         // assertion has been created
           fetch(
-            'http://localhost:3000/webauthn/login-response',
+              base + '/webauthn/login-response',
             {
               method: 'POST',
               credentials: "same-origin",

@@ -45,8 +45,9 @@ let randomBase64URLBuffer = (len) => {
  * @return {MakePublicKeyCredentialOptions} - server encoded make credentials request
  */
 let generateServerMakeCredRequest = (username, displayName, id) => {
+    const challenge = randomBase64URLBuffer(32);
     return {
-        challenge: randomBase64URLBuffer(32),
+        challenge,
 
         rp: {
             name: "ACME Corporation"
@@ -231,7 +232,7 @@ let parseGetAssertAuthData = (buffer) => {
 
 let verifyAuthenticatorAssertionResponse = (webAuthnResponse, authenticators) => {
     let authr = findAuthr(webAuthnResponse.id, authenticators);
-
+    console.error(webAuthnResponse.response);
     let authenticatorData = base64url.toBuffer(webAuthnResponse.response.authenticatorData);
 
     let authrDataStruct  = parseGetAssertAuthData(authenticatorData);

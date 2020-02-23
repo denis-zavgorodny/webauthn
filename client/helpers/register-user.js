@@ -1,10 +1,10 @@
 import createCredentialDefaultArgs from './create-credentials';
 import publicKeyCredentialToJSON from './public-key-credential-to-json';
 import json2html from "json2html";
-
+const base = `http://${window.location.hostname}:1235`;
 const registerUser = (name) => {
   fetch(
-    'http://localhost:3000/webauthn/register',
+      base + '/webauthn/register',
     {
       method: 'POST',
       body: JSON.stringify({
@@ -23,11 +23,12 @@ const registerUser = (name) => {
         return;
       }
       const credentials = createCredentialDefaultArgs(res.user.name, res.user.displayName, res.user.id, res.challenge);
+
       navigator.credentials.create(credentials)
         .then((cred) => {
             console.log("====>", cred);
             fetch(
-              'http://localhost:3000/webauthn/register-response',
+              base + '/webauthn/register-response',
               {
                 method: 'POST',
                 credentials: "same-origin",
