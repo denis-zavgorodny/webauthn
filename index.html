@@ -5,6 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <style>
+        body {
+            font-size: 24px;
+        }
+        .form {
+            width: 30%;
+            margin: 10% auto;
+        }
+        .form input[type=text] {
+            border: 1px solid #2588c1;
+            border-radius: 5px;
+            font-size: 24px;
+            width: 100%;
+            margin: 0 0 2% 0;
+            padding: 1%;
+            color: #2588c1;
+        }
+        .form button {
+            font-size: 24px;
+            background: #2588c1;
+            border-radius: 5px;
+            border: 1px solid #2588c1;
+            color: #fff;
+            width: 100%;
+            margin: 0 0 2% 0;
+            cursor: pointer;
+            transition: all 0.5s;
+        }
+        .form button:hover {
+            color: #2588c1;
+            background: #fff;
+        }
+        #info {
+            background: #000;
+            color: #fff;
+            padding: 3%;
+            font-family: "Courier New", Courier, monospace;
+            width: 90%;
+            margin: 0 auto;
+        }
+    </style>
     <script type="text/javascript">
         var j2h = {
             toggleVisibility: function (el, name) {
@@ -38,7 +79,7 @@
     </script>
 </head>
 <body>
-    <form>
+    <form class="form">
         <input value="denis" type="text" id="login" name="login">
         <button type="button" id="registrationButton">Registration</button>
         <button type="button" id="authorizationButton">Authorization</button>
