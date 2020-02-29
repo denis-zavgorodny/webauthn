@@ -8,10 +8,14 @@
     <style>
         body {
             font-size: 24px;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #717171;
         }
         .form {
             width: 30%;
-            margin: 10% auto;
+            margin: 7% auto;
+            display: flex;
+            flex-direction: column;
         }
         .form input[type=text] {
             border: 1px solid #2588c1;
@@ -21,6 +25,7 @@
             margin: 0 0 2% 0;
             padding: 1%;
             color: #2588c1;
+            box-sizing: border-box;
         }
         .form button {
             font-size: 24px;
@@ -32,10 +37,14 @@
             margin: 0 0 2% 0;
             cursor: pointer;
             transition: all 0.5s;
+            box-sizing: border-box;
         }
         .form button:hover {
             color: #2588c1;
             background: #fff;
+        }
+        #info:empty {
+            display: none;
         }
         #info {
             background: #000;
@@ -44,6 +53,9 @@
             font-family: "Courier New", Courier, monospace;
             width: 90%;
             margin: 0 auto;
+        }
+        .form-layer {
+            display: flex;
         }
     </style>
     <script type="text/javascript">
@@ -79,11 +91,17 @@
     </script>
 </head>
 <body>
-    <form class="form">
-        <input value="denis" type="text" id="login" name="login">
-        <button type="button" id="registrationButton">Registration</button>
-        <button type="button" id="authorizationButton">Authorization</button>
-    </form>
+
+    <div class="form-layer"><form class="form" id="registerForm">
+        <h2>Register new user</h2>
+        <input value="" autocomplete="off" type="text" id="login" name="login">
+        <button type="submit" id="registrationButton">Register</button>
+        </form>
+        <form class="form" id="loginForm">
+        <h2>Login</h2>
+        <input value="" autocomplete="off" type="text" id="login" name="login">
+        <button type="submit" id="authorizationButton">Login</button>
+    </form></div>
     <div id="info"></div>
     <hr />
     <div id="dump"></div>
