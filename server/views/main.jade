@@ -1,15 +1,8 @@
-html
-    head
-        link(href='/css/main.css', rel='stylesheet')
+include ./includes/header.jade
+if !user.login
+    div.secret This page is restricted. Please Log in / Register to view this source
 
-    body
-        include ./includes/head.jade
+if user.login
+    div.secret HELLO!!!
 
-        if !user.login
-            div.secret This page is restricted. Please Log in / Register to view this source
-
-        if user.login
-            div.secret HELLO!!!
-
-        script(src='/js/dist/index.js')
-
+include ./includes/footer.jade

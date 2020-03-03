@@ -1,21 +1,26 @@
 import registerUser from "./helpers/register-user";
 import authorizeUser from "./helpers/authorize-user";
 
-document.getElementById("registerForm").addEventListener("submit", event => {
-  event.preventDefault();
-  event.stopPropagation();
-  const name = document.getElementById("login").value;
-  if (!name) alert("name should not be empty");
-  registerUser(name);
-});
-
-document.getElementById("loginForm").addEventListener("submit", event => {
-  event.preventDefault();
-  event.stopPropagation();
-  const name = document.getElementById("login1").value;
-  if (!name) alert("name should not be empty");
-  authorizeUser(name);
-});
+const registerForm = document.getElementById("registerForm");
+if (registerForm) {
+    registerForm.addEventListener("submit", event => {
+        event.preventDefault();
+        event.stopPropagation();
+        const name = document.getElementById("login").value;
+        if (!name) alert("name should not be empty");
+        registerUser(name);
+    });
+}
+const loginForm = document.getElementById("loginForm");
+if (loginForm) {
+    loginForm.addEventListener("submit", event => {
+        event.preventDefault();
+        event.stopPropagation();
+        const name = document.getElementById("login1").value;
+        if (!name) alert("name should not be empty");
+        authorizeUser(name);
+    });
+}
 
 window.j2h = {
   toggleVisibility: function(el, name) {
