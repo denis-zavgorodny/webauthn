@@ -1,0 +1,20 @@
+include ./includes/header.jade
+
+table
+    tr
+        th name
+        th id
+        th key
+    tr
+        td #{database[user.login].name}
+        td
+            pre #{database[user.login].id}
+        td
+            each key in database[user.login].authenticators
+                div id:
+                    pre #{key.rawId}
+                div key:
+                    pre #{key.keyString}
+
+
+include ./includes/footer.jade

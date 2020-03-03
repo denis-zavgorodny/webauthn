@@ -59,8 +59,13 @@ body {
 
 .menu {
     display: flex;
+    margin: 0;
+    padding: 0;
 }
 .menu li {
     list-style-type: none;
     padding: 1%;
+}
+.nickname {
+    margin: 0 0 0 auto;
 }

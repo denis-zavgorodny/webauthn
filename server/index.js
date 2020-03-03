@@ -12,6 +12,7 @@ const webuathnauth  = require('./routes/webauthn.js');
 const login = require("./routes/login.js");
 const logout = require("./routes/logout.js");
 const main = require("./routes/main.js");
+const profile = require("./routes/profile.js");
 
 const app           = express();
 
@@ -43,6 +44,7 @@ app.use('/webauthn', webuathnauth);
 
 app.use("/login", login);
 app.use("/logout", logout);
+app.use("/profile", profile);
 app.use("/", main);
 
 const port = config.port || 3000;

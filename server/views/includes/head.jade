@@ -7,3 +7,6 @@ ul.menu
     if user.login
         li
             a(href='/logout') Logout
+        li.nickname
+            | Hello,
+            a(href='/profile') #{user.login}
