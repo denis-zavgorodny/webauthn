@@ -1,0 +1,22 @@
+html
+    head
+        link(href='/css/main.css', rel='stylesheet')
+
+    body
+        include ./includes/head.jade
+        div.form-layer
+            form#registerForm.form
+                h2 Register new user
+                input(autocomplete="off" type="text" id="login" name="login")
+                button(type="submit" id="registrationButton") Register
+
+            form#loginForm.form
+                h2 Login
+                input(autocomplete="off" type="text" id="login1" name="login")
+                button(type="submit" id="authorizationButton") Login
+        div#info
+        hr
+        div#dump
+
+        script(src='/js/dist/index.js')
+

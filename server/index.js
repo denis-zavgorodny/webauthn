@@ -9,8 +9,12 @@ const crypto        = require('crypto');
 
 const config        = require('./config.json');
 const webuathnauth  = require('./routes/webauthn.js');
+const login = require("./routes/login.js");
 
 const app           = express();
+
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "jade");
 
 app.use(bodyParser.json());
 
@@ -33,7 +37,9 @@ app.use(function(req, res, next) {
 /* ----- serve static ----- */
 app.use(express.static(path.join(__dirname, 'static')));
 
-app.use('/webauthn', webuathnauth)
+app.use('/webauthn', webuathnauth);
+
+app.use("/login", login);
 
 const port = config.port || 3000;
 app.listen(port);

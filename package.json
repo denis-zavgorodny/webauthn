@@ -5,6 +5,7 @@
   "main": "example.js",
   "scripts": {
     "start": "parcel index.html",
+    "build": "parcel build",
     "local": "parcel index-local.html"
   },
   "repository": {

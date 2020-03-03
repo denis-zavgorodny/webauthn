@@ -11,7 +11,8 @@
     "cookie-session": "^2.0.0-beta.3",
     "cors": "^2.8.5",
     "ec-key": "0.0.4",
-    "express": "^4.15.4"
+    "express": "^4.15.4",
+    "jade": "^1.11.0"
   },
   "scripts": {
     "start": "nodemon index.js"

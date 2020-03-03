@@ -14,7 +14,7 @@ document.getElementById('registerForm').addEventListener('submit', (event) => {
 document.getElementById('loginForm').addEventListener('submit', (event) => {
   event.preventDefault();
   event.stopPropagation();
-  const name = document.getElementById('login').value;
+  const name = document.getElementById("login1").value;
   if(!name) alert('name should not be empty');
   authorizeUser(name);
 });
