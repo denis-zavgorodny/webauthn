@@ -1,0 +1,15 @@
+html
+    head
+        link(href='/css/main.css', rel='stylesheet')
+
+    body
+        include ./includes/head.jade
+
+        if !user.login
+            div.secret This page is restricted. Please Log in / Register to view this source
+
+        if user.login
+            div.secret HELLO!!!
+
+        script(src='/js/dist/index.js')
+

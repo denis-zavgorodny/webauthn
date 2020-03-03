@@ -10,7 +10,8 @@ const authorizeUser = (name) => {
         name,
         username: name
       }),
-      credentials: "same-origin",
+      credentials: 'include',
+    //   credentials: "same-origin",
       headers: {
         'Content-Type': 'application/json'
       },
@@ -31,7 +32,8 @@ const authorizeUser = (name) => {
               base + '/webauthn/login-response',
             {
               method: 'POST',
-              credentials: "same-origin",
+              credentials: 'include',
+            //   credentials: "same-origin",
               body: JSON.stringify(publicKeyCredentialToJSON(assertion)),
               headers: {
                 'Content-Type': 'application/json'
@@ -43,6 +45,9 @@ const authorizeUser = (name) => {
                 document.getElementById(
                 "info"
                 ).innerText = `User has been authrized`;
+                setTimeout(() => {
+                    location.href='/';
+                }, 1000);
             } else {
                 document.getElementById(
                     "info"

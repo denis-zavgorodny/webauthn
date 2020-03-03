@@ -3,7 +3,8 @@ const router = express.Router();
 const simpleSession = require("./session");
 
 router.get("/", (request, response) => {
-    response.render("login.jade", { user: request.session.user || {} });
+    request.session.user = {};
+    response.redirect(301, "/");
 });
 
 module.exports = router;

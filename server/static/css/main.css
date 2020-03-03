@@ -56,3 +56,11 @@ body {
 .form-layer {
     display: flex;
 }
+
+.menu {
+    display: flex;
+}
+.menu li {
+    list-style-type: none;
+    padding: 1%;
+}

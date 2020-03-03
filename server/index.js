@@ -10,6 +10,8 @@ const crypto        = require('crypto');
 const config        = require('./config.json');
 const webuathnauth  = require('./routes/webauthn.js');
 const login = require("./routes/login.js");
+const logout = require("./routes/logout.js");
+const main = require("./routes/main.js");
 
 const app           = express();
 
@@ -40,6 +42,8 @@ app.use(express.static(path.join(__dirname, 'static')));
 app.use('/webauthn', webuathnauth);
 
 app.use("/login", login);
+app.use("/logout", logout);
+app.use("/", main);
 
 const port = config.port || 3000;
 app.listen(port);
