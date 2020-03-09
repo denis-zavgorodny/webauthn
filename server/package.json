@@ -12,7 +12,8 @@
     "cors": "^2.8.5",
     "ec-key": "0.0.4",
     "express": "^4.15.4",
-    "jade": "^1.11.0"
+    "jade": "^1.11.0",
+    "jsrsasign": "^8.0.12"
   },
   "scripts": {
     "start": "nodemon index.js"

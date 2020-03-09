@@ -5,6 +5,7 @@ const base64url = require('base64url');
 const router    = express.Router();
 const database  = require('./db');
 const simpleSession  = require('./session');
+const helpers = require('../helpers');
 
 router.get('/test', (request, response) => {
   simpleSession.test = 1111;
@@ -110,6 +111,13 @@ router.post('/register-response', (request, response) => {
     console.error('========clientData======');
     console.error(clientData);
     console.error('========clientData======');
+    if(helpers.verifyPackedAttestation(webauthnResp)) {
+        console.error('!!!!!!!!!');
+        console.error('!!!!!!!!!');
+        console.error('!!!!!!!!!');
+        console.error('!!!!!!!!!');
+        console.error('!!!!!!!!!');
+    }
 
 
     /* Check challenge... */
