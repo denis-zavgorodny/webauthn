@@ -6,6 +6,8 @@
   "scripts": {
     "start": "parcel index.html",
     "build": "parcel build",
+    "front:watch": "parcel watch -d ./server/static/js/dist ./server/static/js/index.js",
+    "front:build": "parcel build -d ./server/static/js/dist ./server/static/js/index.js",
     "local": "parcel index-local.html"
   },
   "repository": {
