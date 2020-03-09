@@ -23,7 +23,7 @@ const registerUser = (name) => {
         return;
       }
       const credentials = createCredentialDefaultArgs(res.user.name, res.user.displayName, res.user.id, res.challenge);
-
+      console.log("credentials", credentials);
       navigator.credentials.create(credentials)
         .then((cred) => {
             console.log("====>", cred);

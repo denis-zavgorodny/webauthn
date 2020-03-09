@@ -124,8 +124,10 @@ router.post('/register-response', (request, response) => {
     const decodedAttestationObj = CBOR.decode(
         base64url.toBuffer(webauthnResp.response.attestationObject));
 
-    const { authData } = decodedAttestationObj;
+    const { authData, attStmt, fmt } = decodedAttestationObj;
 
+    console.error('attStmt', attStmt);
+    console.error('fmt', fmt);
 
     let rpIdHash = authData.slice(0, 32);
     buffer = authData.slice(32);
