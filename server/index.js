@@ -10,6 +10,7 @@ const crypto        = require('crypto');
 const config        = require('./config.json');
 const webuathnauth  = require('./routes/webauthn.js');
 const login = require("./routes/login.js");
+const register = require("./routes/register.js");
 const logout = require("./routes/logout.js");
 const main = require("./routes/main.js");
 const profile = require("./routes/profile.js");
@@ -43,6 +44,7 @@ app.use(express.static(path.join(__dirname, 'static')));
 app.use('/webauthn', webuathnauth);
 
 app.use("/login", login);
+app.use("/register", register);
 app.use("/logout", logout);
 app.use("/profile", profile);
 app.use("/", main);

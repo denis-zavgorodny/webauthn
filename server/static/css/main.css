@@ -74,6 +74,10 @@ body {
 .menu a {
     color: #fff;
 }
+.menu .current a {
+    text-decoration: none;
+    font-weight: bold;
+}
 .nickname {
     margin: 0 0 0 auto;
 }
@@ -89,4 +93,21 @@ body {
     width: 100%;
     max-width: 1120px;
     margin: 0 auto;
+}
+
+h1 {
+    font-size: 30px;
+}
+.secret {
+    width: 50%;
+    margin: 2% auto;
+    border: 1px solid #717171;
+    padding: 2%;
+    box-sizing: border-box;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 0 10px 1px RGBA(0,0,0,0.1);
+}
+.secret a {
+    color: #424242;
 }

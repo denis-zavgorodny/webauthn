@@ -111,13 +111,20 @@ router.post('/register-response', (request, response) => {
     console.error('========clientData======');
     console.error(clientData);
     console.error('========clientData======');
-    if(helpers.verifyPackedAttestation(webauthnResp)) {
-        console.error('!!!!!!!!!');
-        console.error('!!!!!!!!!');
-        console.error('!!!!!!!!!');
-        console.error('!!!!!!!!!');
-        console.error('!!!!!!!!!');
+    try {
+       const resVerify = helpers.verifyPackedAttestation(webauthnResp);
+       if(resVerify) {
+           console.error('!!!!!!!!!!!!')
+           console.error('!!!KEY VERIFIED!!!')
+           console.error('!!!!!!!!!!!!')
+       }
+    } catch (error) {
+        console.error(error);
+        console.error("!!!!!!!!!!!!");
+        console.error("!!!KEY IS NOT VERIFIED!!!");
+        console.error("!!!!!!!!!!!!");
     }
+
 
 
     /* Check challenge... */
@@ -174,7 +181,11 @@ router.post('/register-response', (request, response) => {
       keyString,
       rawId: webauthnResp.rawId
     });
-    database[simpleSession.username].registered = true
+    database[simpleSession.username].registered = true;
+
+    request.session.user = {
+        login: simpleSession.username
+    };
 
     console.error('=============================')
     console.error('=============================')

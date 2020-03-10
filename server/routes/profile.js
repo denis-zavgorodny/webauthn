@@ -6,7 +6,8 @@ router.get("/", (request, response) => {
     if (request.session.user && request.session.user.login) {
         response.render("profile.jade", {
           user: request.session.user || {},
-          database
+          database,
+          path: request.originalUrl
         });
     } else {
         response.redirect(301, "/");

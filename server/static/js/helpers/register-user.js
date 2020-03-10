@@ -40,6 +40,9 @@ const registerUser = (name) => {
               }
             ).then(res => res.json()).then(response => {
               if(response.status === 'OK') {
+                setTimeout(() => {
+                    location.href="/";
+                }, 1000);
                 document.getElementById(
                   "info"
                 ).innerText = `User ${res.user.id} has been created\n\n${response.key}`;

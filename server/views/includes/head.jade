@@ -1,9 +1,12 @@
 ul.menu
-    li
+    li(class=path==='/' && 'current')
         a(href='/') Main
     if !user.login
-        li
+        li(class=path==='/login' && 'current')
             a(href='/login') Sign In
+    if !user.login
+        li(class=path==='/register' && 'current')
+            a(href='/register') Sign Up
     if user.login
         li
             a(href='/logout') Logout
