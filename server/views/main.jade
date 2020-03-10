@@ -1,8 +1,8 @@
 include ./includes/header.jade
 if !user.login
-    div.secret This page is restricted. Please Log in / Register to view this source
+    include ./includes/banner-restrict.jade
 
 if user.login
-    div.secret HELLO!!!
+    include ./includes/banner.jade
 
 include ./includes/footer.jade
