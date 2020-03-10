@@ -4,7 +4,7 @@ const simpleSession = require("./session");
 
 router.get("/", (request, response) => {
     console.log(request.session);
-    response.render("main.jade", { user: request.session.user || {}, path: request.originalUrl });
+    response.render("main.jade", { login: request.session.user && request.session.user.login, user: request.session.user || {}, path: request.originalUrl });
 });
 
 module.exports = router;
