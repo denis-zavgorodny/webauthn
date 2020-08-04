@@ -41,6 +41,18 @@ body {
     color: #2588c1;
     background: #fff;
 }
+.profile-table {
+    margin: 20px auto 0;
+}
+.profile-table th {
+    background: #717171;
+    color: #fff;
+}
+.profile-table td {
+    padding: 4px;
+    border: 1px solid #cc0e27;
+    color: #000;
+}
 
 #info:empty {
     display: none;
@@ -64,29 +76,40 @@ body {
     margin: 0;
     padding: 0 1%;
     font-size: 16px;
-    background: #424242;
-    color: #fff;
+    background: #fff;
+    color: #000;
+    border-bottom: 2px solid #cc0e27;
 }
 .menu li {
     list-style-type: none;
     padding: 1%;
 }
 .menu a {
-    color: #fff;
+    color: #000;
 }
+
+.secret {
+    margin: 10% auto 0;
+    padding: 0 10px;
+    max-width: 1000px;
+    text-align: center;
+}
+.secret a {
+    color: #cc0e27;
+}
+
 .nickname {
     margin: 0 0 0 auto;
 }
 
-.wfdays {
-    background-color: #1B91CD;
+.odessajs {
+    background-color: #cc0e27;
     overflow: hidden;
     color: #fff;
     font-family: Arial, sans-serif;
 }
-.wfdays-logo {
+.odessajs-logo {
     display: block;
     width: 100%;
-    max-width: 1120px;
     margin: 0 auto;
 }
