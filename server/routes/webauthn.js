@@ -182,6 +182,10 @@ router.post('/register-response', (request, response) => {
     console.error('=============================')
     console.error('=============================')
 
+    request.session.user = {
+      login: simpleSession.username,
+    };
+
     response.json({
       status: "OK",
       message: "OK",

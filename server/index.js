@@ -37,6 +37,7 @@ app.use(function(req, res, next) {
   next();
 });
 
+app.set("etag", false);
 /* ----- serve static ----- */
 app.use(express.static(path.join(__dirname, 'static')));
 
