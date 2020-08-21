@@ -138,6 +138,10 @@ router.post('/register-response', (request, response) => {
     console.error('fmt', fmt);
 
     let rpIdHash = authData.slice(0, 32);
+    console.log('rpIdHash==================');
+    console.log(rpIdHash);
+    console.log(rpIdHash.toString("base64"));
+    console.log("rpIdHash==================");
     buffer = authData.slice(32);
     /* Flags */
     let flagsBuffer = buffer.slice(0, 1);

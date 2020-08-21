@@ -2,14 +2,15 @@
 const createCredentialDefaultArgs = (name, username, id, challenge) => ({
   publicKey: {
     rp: {
-      name: "Home test"
+      name: "Home test1",
+      id: "localhost",
     },
 
     // User:
     user: {
-      id: Uint8Array.from(id, c => c.charCodeAt(0)),
+      id: Uint8Array.from(id, (c) => c.charCodeAt(0)),
       name: name,
-      displayName: username
+      displayName: username,
     },
 
     pubKeyCredParams: [{ alg: -7, type: "public-key" }],
@@ -20,9 +21,9 @@ const createCredentialDefaultArgs = (name, username, id, challenge) => ({
       //requireResidentKey: true,
     },
     timeout: 60000,
-    challenge: Uint8Array.from(challenge, c => c.charCodeAt(0)),
+    challenge: Uint8Array.from(challenge, (c) => c.charCodeAt(0)),
     attestation: "direct",
-  }
+  },
 });
 
 export default createCredentialDefaultArgs;
